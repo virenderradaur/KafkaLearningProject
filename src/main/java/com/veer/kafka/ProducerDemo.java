@@ -24,22 +24,23 @@ public class ProducerDemo {
         producerProperties.put("batch.size", 16384);
         producerProperties.put("retries", 0);
         producerProperties.put("linger.ms", 1);
-        producerProperties.put("session.timeout.ms", "10000");
+        producerProperties.put("session.timeout.ms", 900000);
         // Construct Producer
         KafkaProducer<String,String> kafkaProducer = new KafkaProducer<String, String>(producerProperties);
-
-        ProducerRecord<String, String> producerRecord = new ProducerRecord<String, String>(topicName,"hello from app");
-           //send
+    for(int i=0;i<10;i++) {
+        ProducerRecord<String, String> producerRecord = new ProducerRecord<String, String>(topicName, "hello from app"+i);
+        //send
         try {
             System.out.println("Sending record...");
             kafkaProducer.send(producerRecord).get();
-        System.out.println("Sent..");
+            System.out.println("Sent..");
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
         kafkaProducer.flush();
+    }
         System.out.println("Closing ...!!!");
         kafkaProducer.close(10L, TimeUnit.MILLISECONDS);
     }
